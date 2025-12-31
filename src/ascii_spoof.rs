@@ -1,26 +1,18 @@
 use anyhow::Result;
 use once_cell::sync::Lazy;
 use serde::Deserialize;
-use serde::Serialize;
-use serde_json::json;
 use std::collections::HashSet;
 
 use crate::db;
+use crate::types::{AsciiResponse, AsciiResult};
 
 const LENGTH_BAND: usize = 2;
 const MAX_CANDIDATES: usize = 5000;
 const MIN_SIMILARITY: u8 = 80;
 const MAX_RESULTS: usize = 3;
 
-#[derive(Debug, Serialize)]
-struct AsciiResult {
-	domain: String,
-	similarity: u8,
-}
-
 #[derive(Debug, Deserialize)]
 struct MostPhishedEntry {
-	business: String,
 	domain: String,
 	base: String,
 	#[serde(default)]
@@ -32,9 +24,14 @@ static MOST_PHISHED: Lazy<Vec<MostPhishedEntry>> = Lazy::new(|| {
 	serde_json::from_str(data).expect("most-phished.json must be valid JSON")
 });
 
-pub fn lookup_ascii(domain: &str, db_path: &str) -> Result<serde_json::Value> {
+pub fn lookup_ascii(domain: &str, db_path: &str) -> Result<AsciiResponse> {
 	let results = detect_impersonation(domain, db_path)?;
-	Ok(json!({ "q": domain, "ascii": true, "puny": false, "results": results }))
+	Ok(AsciiResponse {
+		q: domain.to_string(),
+		ascii: true,
+		puny: false,
+		results,
+	})
 }
 
 fn detect_impersonation(domain: &str, db_path: &str) -> Result<Vec<AsciiResult>> {
@@ -175,4 +172,55 @@ fn levenshtein_distance(a: &str, b: &str) -> usize {
 	}
 
 	matrix[a_len][b_len]
+}
+
+#[cfg(test)]
+mod tests {
+	use super::*;
+	use serde_json::json;
+
+	#[test]
+	fn lookup_ascii_returns_expected_for_gooble() {
+		let result = lookup_ascii("gooble.com", "unused.sqlite").expect("lookup should succeed");
+		let expected = json!({
+			"q": "gooble.com",
+			"ascii": true,
+			"puny": false,
+			"results": [
+				{
+					"domain": "google.com",
+					"similarity": 90
+				}
+			]
+		});
+		assert_eq!(serde_json::to_value(result).unwrap(), expected);
+	}
+
+	#[test]
+	fn similarity_ratio_handles_edge_cases() {
+		assert_eq!(similarity_ratio("", ""), 100);
+		assert_eq!(similarity_ratio("a", ""), 0);
+		assert_eq!(similarity_ratio("same", "same"), 100);
+	}
+
+	#[test]
+	fn levenshtein_distance_basic_cases() {
+		assert_eq!(levenshtein_distance("kitten", "sitting"), 3);
+		assert_eq!(levenshtein_distance("", "abc"), 3);
+		assert_eq!(levenshtein_distance("abc", ""), 3);
+	}
+
+	#[test]
+	fn detect_from_most_phished_matches_base_domain() {
+		let results = detect_from_most_phished("gooble");
+		assert!(results.iter().any(|r| r.domain == "google.com"));
+	}
+
+	#[test]
+	fn normalize_and_helpers() {
+		assert_eq!(normalize("TeSt.COM"), "test.com");
+		assert_eq!(strip_non_alnum("g00-gle.com"), "g00glecom");
+		assert_eq!(get_base_domain("example.com"), "example");
+		assert_eq!(get_base_domain("nodot"), "nodot");
+	}
 }

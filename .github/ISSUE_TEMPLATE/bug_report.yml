@@ -1,0 +1,77 @@
+name: Bug Report
+description: Report a problem with SpotSpoof CLI.
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: input
+    id: contact
+    attributes:
+      label: Contact Details
+      description: How can we reach you if we need more info?
+      placeholder: email@example.com
+    validations:
+      required: false
+  - type: input
+    id: version
+    attributes:
+      label: Version / Commit
+      description: Release tag, version, or commit SHA.
+      placeholder: v0.1.0 or 1a2b3c4
+    validations:
+      required: true
+  - type: dropdown
+    id: install_method
+    attributes:
+      label: Install Method
+      options:
+        - Release binary
+        - Built from source
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: OS
+      description: Operating system and version.
+      placeholder: macOS 14.4, Ubuntu 22.04, Windows 11
+    validations:
+      required: true
+  - type: textarea
+    id: what_happened
+    attributes:
+      label: What happened?
+      description: Also include what you expected to happen.
+      placeholder: Describe the issue.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Provide a minimal repro command or workflow.
+      placeholder: |
+        1. spotspoof lookup gooble.com
+        2. ...
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / Output
+      description: Paste relevant CLI output or logs.
+      render: shell
+    validations:
+      required: false
+  - type: checkboxes
+    id: sanity
+    attributes:
+      label: Sanity Checks
+      options:
+        - label: I verified this with the latest release
+          required: false
+        - label: I searched existing issues
+          required: false
