@@ -1,0 +1,10 @@
+target/
+spotspoof.sqlite
+spotspoof.sqlite.zst
+*.sqlite
+*.sqlite.zst
+*.db
+*.db.zst
+.env
+# domains used to populate the DB
+cleaned_domains.txt

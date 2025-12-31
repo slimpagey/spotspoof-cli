@@ -1,0 +1,371 @@
+[
+  {
+    "business": "Microsoft",
+    "domain": "microsoft.com",
+    "base": "microsoft",
+    "aliases": [
+      "microsoft",
+      "microsoft.com"
+    ]
+  },
+  {
+    "business": "OneDrive",
+    "domain": "microsoft.com",
+    "base": "microsoft",
+    "aliases": [
+      "microsoft",
+      "microsoft.com",
+      "onedrive"
+    ]
+  },
+  {
+    "business": "Okta",
+    "domain": "okta.com",
+    "base": "okta",
+    "aliases": [
+      "okta",
+      "okta.com"
+    ]
+  },
+  {
+    "business": "Adobe",
+    "domain": "adobe.com",
+    "base": "adobe",
+    "aliases": [
+      "adobe",
+      "adobe.com"
+    ]
+  },
+  {
+    "business": "SharePoint",
+    "domain": "microsoft.com",
+    "base": "microsoft",
+    "aliases": [
+      "microsoft",
+      "microsoft.com",
+      "sharepoint"
+    ]
+  },
+  {
+    "business": "Telegram",
+    "domain": "telegram.org",
+    "base": "telegram",
+    "aliases": [
+      "telegram",
+      "telegram.org"
+    ]
+  },
+  {
+    "business": "pCloud",
+    "domain": "pcloud.com",
+    "base": "pcloud",
+    "aliases": [
+      "pcloud",
+      "pcloud.com"
+    ]
+  },
+  {
+    "business": "Facebook",
+    "domain": "facebook.com",
+    "base": "facebook",
+    "aliases": [
+      "facebook",
+      "facebook.com"
+    ]
+  },
+  {
+    "business": "DHL",
+    "domain": "dhl.com",
+    "base": "dhl",
+    "aliases": [
+      "dhl",
+      "dhl.com"
+    ]
+  },
+  {
+    "business": "WhatsApp",
+    "domain": "whatsapp.com",
+    "base": "whatsapp",
+    "aliases": [
+      "whatsapp",
+      "whatsapp.com"
+    ]
+  },
+  {
+    "business": "ANZ Banking Group",
+    "domain": "anz.com.au",
+    "base": "anz.com",
+    "aliases": [
+      "anz banking group",
+      "anz.com",
+      "anz.com.au",
+      "anzbankinggroup",
+      "anzcom"
+    ]
+  },
+  {
+    "business": "Amazon",
+    "domain": "amazon.com",
+    "base": "amazon",
+    "aliases": [
+      "amazon",
+      "amazon.com"
+    ]
+  },
+  {
+    "business": "Ebay",
+    "domain": "ebay.com",
+    "base": "ebay",
+    "aliases": [
+      "ebay",
+      "ebay.com"
+    ]
+  },
+  {
+    "business": "Instagram",
+    "domain": "instagram.com",
+    "base": "instagram",
+    "aliases": [
+      "instagram",
+      "instagram.com"
+    ]
+  },
+  {
+    "business": "Google",
+    "domain": "google.com",
+    "base": "google",
+    "aliases": [
+      "google",
+      "google.com"
+    ]
+  },
+  {
+    "business": "Sparkasse Financial Group",
+    "domain": "sparkasse.de",
+    "base": "sparkasse",
+    "aliases": [
+      "sparkasse",
+      "sparkasse financial group",
+      "sparkasse.de",
+      "sparkassefinancialgroup"
+    ]
+  },
+  {
+    "business": "FedEx",
+    "domain": "fedex.com",
+    "base": "fedex",
+    "aliases": [
+      "fedex",
+      "fedex.com"
+    ]
+  },
+  {
+    "business": "PayU",
+    "domain": "payu.com",
+    "base": "payu",
+    "aliases": [
+      "payu",
+      "payu.com"
+    ]
+  },
+  {
+    "business": "Rakuten",
+    "domain": "rakuten.com",
+    "base": "rakuten",
+    "aliases": [
+      "rakuten",
+      "rakuten.com"
+    ]
+  },
+  {
+    "business": "Gucci",
+    "domain": "gucci.com",
+    "base": "gucci",
+    "aliases": [
+      "gucci",
+      "gucci.com"
+    ]
+  },
+  {
+    "business": "Apple",
+    "domain": "apple.com",
+    "base": "apple",
+    "aliases": [
+      "apple",
+      "apple.com"
+    ]
+  },
+  {
+    "business": "LinkedIn",
+    "domain": "linkedin.com",
+    "base": "linkedin",
+    "aliases": [
+      "linkedin",
+      "linkedin.com"
+    ]
+  },
+  {
+    "business": "Meta",
+    "domain": "meta.com",
+    "base": "meta",
+    "aliases": [
+      "meta",
+      "meta.com"
+    ]
+  },
+  {
+    "business": "PayPal",
+    "domain": "paypal.com",
+    "base": "paypal",
+    "aliases": [
+      "paypal",
+      "paypal.com"
+    ]
+  },
+  {
+    "business": "Chase",
+    "domain": "chase.com",
+    "base": "chase",
+    "aliases": [
+      "chase",
+      "chase.com"
+    ]
+  },
+  {
+    "business": "Wells Fargo",
+    "domain": "wellsfargo.com",
+    "base": "wellsfargo",
+    "aliases": [
+      "wells fargo",
+      "wellsfargo",
+      "wellsfargo.com"
+    ]
+  },
+  {
+    "business": "Bank of America",
+    "domain": "bankofamerica.com",
+    "base": "bankofamerica",
+    "aliases": [
+      "bank of america",
+      "bankofamerica",
+      "bankofamerica.com"
+    ]
+  },
+  {
+    "business": "Coinbase",
+    "domain": "coinbase.com",
+    "base": "coinbase",
+    "aliases": [
+      "coinbase",
+      "coinbase.com"
+    ]
+  },
+  {
+    "business": "Netflix",
+    "domain": "netflix.com",
+    "base": "netflix",
+    "aliases": [
+      "netflix",
+      "netflix.com"
+    ]
+  },
+  {
+    "business": "Dropbox",
+    "domain": "dropbox.com",
+    "base": "dropbox",
+    "aliases": [
+      "dropbox",
+      "dropbox.com"
+    ]
+  },
+  {
+    "business": "Walmart",
+    "domain": "walmart.com",
+    "base": "walmart",
+    "aliases": [
+      "walmart",
+      "walmart.com"
+    ]
+  },
+  {
+    "business": "Nike",
+    "domain": "nike.com",
+    "base": "nike",
+    "aliases": [
+      "nike",
+      "nike.com"
+    ]
+  },
+  {
+    "business": "Adidas",
+    "domain": "adidas.com",
+    "base": "adidas",
+    "aliases": [
+      "adidas",
+      "adidas.com"
+    ]
+  },
+  {
+    "business": "Binance",
+    "domain": "binance.com",
+    "base": "binance",
+    "aliases": [
+      "binance",
+      "binance.com"
+    ]
+  },
+  {
+    "business": "Upbit",
+    "domain": "upbit.com",
+    "base": "upbit",
+    "aliases": [
+      "upbit",
+      "upbit.com"
+    ]
+  },
+  {
+    "business": "OKX",
+    "domain": "okx.com",
+    "base": "okx",
+    "aliases": [
+      "okx",
+      "okx.com"
+    ]
+  },
+  {
+    "business": "Bybit",
+    "domain": "bybit.com",
+    "base": "bybit",
+    "aliases": [
+      "bybit",
+      "bybit.com"
+    ]
+  },
+  {
+    "business": "Kraken",
+    "domain": "kraken.com",
+    "base": "kraken",
+    "aliases": [
+      "kraken",
+      "kraken.com"
+    ]
+  },
+  {
+    "business": "Bitget",
+    "domain": "bitget.com",
+    "base": "bitget",
+    "aliases": [
+      "bitget",
+      "bitget.com"
+    ]
+  },
+  {
+    "business": "Bitfinex",
+    "domain": "bitfinex.com",
+    "base": "bitfinex",
+    "aliases": [
+      "bitfinex",
+      "bitfinex.com"
+    ]
+  }
+]
