@@ -12,8 +12,8 @@ SpotSpoof is a FOSS Rust CLI for phishing and domain spoof analysis. It detects 
 Releases include a macOS binary and a compressed SQLite database (`spotspoof.sqlite.zst`). Download the binary and database from GitHub Releases, then:
 
 ```bash
-./spotspoof import --download
-./spotspoof lookup gooogle.com
+./spotspoof-cli import --download
+./spotspoof-cli lookup gooogle.com
 ```
 
 ### Build from Source
@@ -60,8 +60,8 @@ Request body format:
 SpotSpoof uses structured logging via `tracing`. Configure output and destination with:
 
 ```bash
-spotspoof --log-format json --log-destination stdout lookup gooogle.com
-spotspoof --log-destination file --log-file /var/log/spotspoof.log lookup gooogle.com
+spotspoof-cli --log-format json --log-destination stdout lookup gooogle.com
+spotspoof-cli --log-destination file --log-file /var/log/spotspoof.log lookup gooogle.com
 ```
 
 ## Output Formats
@@ -74,7 +74,7 @@ spotspoof --log-destination file --log-file /var/log/spotspoof.log lookup gooogl
 `import --download` verifies the compressed database SHA-256 before decompressing. Update `config/db_sha256.txt` (or set `SPOTSPOOF_DB_SHA256_PATH`) when the release DB changes.
 
 ## Pull Requests
-We welcome contributions. Please use the PR template and include a short summary, test results (or why tests weren’t run), and any relevant screenshots/log samples.
+Contributions are welcome!. Please open PRs against the `dev` branch. The promotion flow is `dev` → `staging` → `main` (release). Please use the PR template.
 
 ## Getting Started (Repo Root)
 ```bash

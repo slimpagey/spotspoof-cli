@@ -1,0 +1,27 @@
+name: source-branch-check
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+    branches:
+      - dev
+      - staging
+      - main
+
+jobs:
+  enforce:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enforce PR source branch rules
+        run: |
+          echo "Base (target) branch: ${{ github.base_ref }}"
+          echo "Head (source) branch: ${{ github.head_ref }}"
+
+          BASE="${{ github.base_ref }}"
+          HEAD="${{ github.head_ref }}"
+
+          if [ "$BASE" = "main" ]; then
+            [ "$HEAD" = "staging" ] || (echo "main can only accept PRs from staging" && exit 1)
+          elif [ "$BASE" = "staging" ]; then
+            [ "$HEAD" = "dev" ] || (echo "staging can only accept PRs from dev" && exit 1)
+          fi
