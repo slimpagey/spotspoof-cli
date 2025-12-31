@@ -8,3 +8,6 @@ spotspoof.sqlite.zst
 .env
 # domains used to populate the DB
 cleaned_domains.txt
+
+# macOS
+.DS_Store
