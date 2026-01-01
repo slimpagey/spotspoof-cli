@@ -1,0 +1,64 @@
+name: Security Report
+description: Report a security vulnerability or concern
+title: "[SECURITY]: "
+labels: ["security"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping keep this project secure. Please provide details about the security issue below.
+        
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear description of the security issue
+      placeholder: What is the vulnerability?
+    validations:
+      required: true
+      
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Detailed steps to reproduce the issue
+      placeholder: |
+        1. Run command...
+        2. With arguments...
+        3. Observe...
+    validations:
+      required: true
+      
+  - type: textarea
+    id: impact
+    attributes:
+      label: Potential Impact
+      description: What could an attacker do with this vulnerability?
+      placeholder: Describe the potential impact
+    validations:
+      required: true
+      
+  - type: input
+    id: version
+    attributes:
+      label: Version Affected
+      description: Which version(s) are affected?
+      placeholder: e.g., v1.2.3 or "latest"
+    validations:
+      required: true
+      
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Rust version, etc.
+      placeholder: |
+        - OS: macOS 14.1
+        - Rust version: 1.75.0
+        
+  - type: textarea
+    id: suggested-fix
+    attributes:
+      label: Suggested Fix (Optional)
+      description: If you have ideas for how to fix this, please share
+      placeholder: Potential solutions or mitigations
