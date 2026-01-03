@@ -1,7 +1,19 @@
 [package]
 name = "spotspoof-cli"
-version = "0.2.0-beta"
+version = "1.0.0"
 edition = "2021"
+rust-version = "1.83"
+authors = ["Rob Page <rob@robertpage.uk>"]
+license = "MIT"
+description = "Domain spoofing & IDN/Punycode detection for security automation workflows"
+repository = "https://github.com/slimpagey/spotspoof-cli"
+keywords = ["security", "phishing", "domain", "cli"]
+categories = ["command-line-utilities", "security"]
+readme = "README.md"
+
+[[bin]]
+name = "spotspoof"
+path = "src/main.rs"
 
 [dependencies]
 anyhow = "1"
