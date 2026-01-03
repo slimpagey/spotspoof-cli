@@ -25,21 +25,6 @@ jobs:
         with:
           fetch-depth: 2
       
-      - name: Check if merged from staging
-        id: check_branch
-        run: |
-          # Get the merge commit message
-          COMMIT_MSG=$(git log -1 --pretty=%B)
-          
-          # Check if this is a merge from staging
-          if echo "$COMMIT_MSG" | grep -qE "Merge.*staging.*into.*main"; then
-            echo "is_staging_merge=true" >> $GITHUB_OUTPUT
-            echo "✓ Detected merge from staging to main"
-          else
-            echo "is_staging_merge=false" >> $GITHUB_OUTPUT
-            echo "✗ Not a merge from staging, skipping publish"
-          fi
-      
       - name: Install Rust toolchain
         if: steps.check_branch.outputs.is_staging_merge == 'true'
         uses: dtolnay/rust-toolchain@stable
