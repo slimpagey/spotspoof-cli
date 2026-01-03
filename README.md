@@ -247,7 +247,7 @@ spotspoof lookup амаzоn.com
 
 **Example 2: ASCII usage**
 ```bash
-spotspoof lookup example.com
+spotspoof ascii example.com
 
 {
   "q": "example.com",
