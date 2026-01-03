@@ -9,6 +9,8 @@ use std::fs::{self, File};
 use std::io::{Read, Write};
 
 const DEFAULT_DB_SHA256_PATH: &str = "config/db_sha256.txt";
+pub const DEFAULT_DB_URL: &str =
+    "https://github.com/slimpagey/spotspoof-cli/releases/latest/download/spotspoof.sqlite.zst";
 
 pub fn open(path: &str) -> Result<Connection> {
     let conn = Connection::open(path)?;
@@ -215,5 +217,38 @@ mod tests {
         let _ = fs::remove_file(&db_path);
         let _ = fs::remove_file(&sha_path);
         std::env::remove_var("SPOTSPOOF_DB_SHA256_PATH");
+    }
+
+    #[test]
+    #[ignore = "slow: downloads the release DB and requires network access"]
+    fn release_db_download_matches_sha256() {
+        let _guard = ENV_LOCK.lock().unwrap();
+        std::env::remove_var("SPOTSPOOF_DB_SHA256_PATH");
+
+        let mut response =
+            reqwest::blocking::get(DEFAULT_DB_URL).expect("download release db");
+        if !response.status().is_success() {
+            panic!("Download failed: HTTP {}", response.status());
+        }
+
+        let mut hasher = Sha256::new();
+        let mut buf = [0u8; 64 * 1024];
+        let mut total = 0usize;
+        loop {
+            let read = response.read(&mut buf).expect("read response");
+            if read == 0 {
+                break;
+            }
+            total += read;
+            hasher.update(&buf[..read]);
+        }
+
+        let expected = read_expected_db_sha256().expect("read expected sha");
+        let actual = format!("{:x}", hasher.finalize());
+        assert!(
+            total > 0,
+            "expected response body, downloaded 0 bytes"
+        );
+        assert_eq!(actual, expected, "release DB checksum mismatch");
     }
 }
