@@ -49,30 +49,52 @@ jobs:
     name: Build ${{ matrix.target }}
     needs: check-merge
     if: needs.check-merge.outputs.should_release == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         include:
           - target: x86_64-pc-windows-gnu
+            os: ubuntu-latest
           - target: x86_64-unknown-linux-musl
+            os: ubuntu-latest
           - target: x86_64-apple-darwin
+            os: macos-13  # Intel Mac
           - target: aarch64-apple-darwin
+            os: macos-14  # Apple Silicon Mac
     steps:
       - uses: actions/checkout@v4
       
-      - name: Compile
-        uses: rust-build/rust-build.action@v1.4.5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
         with:
-          RUSTTARGET: ${{ matrix.target }}
-          
+          toolchain: 1.83.0
+          targets: ${{ matrix.target }}
+      
+      - name: Install cross-compilation tools (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mingw-w64 musl-tools
+      
+      - name: Build
+        run: cargo build --release --target ${{ matrix.target }}
+      
+      - name: Package binaries
+        run: |
+          cd target/${{ matrix.target }}/release
+          if [[ "${{ matrix.target }}" == *"windows"* ]]; then
+            cp spotspoof.exe spotspoof-${{ matrix.target }}.exe
+            echo "ASSET=spotspoof-${{ matrix.target }}.exe" >> $GITHUB_ENV
+          else
+            cp spotspoof spotspoof-${{ matrix.target }}
+            echo "ASSET=spotspoof-${{ matrix.target }}" >> $GITHUB_ENV
+          fi
+      
       - name: Upload to Release
         uses: softprops/action-gh-release@v1
         with:
           draft: true
           tag_name: v${{ needs.check-merge.outputs.version }}
           name: Release v${{ needs.check-merge.outputs.version }}
-          files: |
-            output/*
+          files: target/${{ matrix.target }}/release/${{ env.ASSET }}
