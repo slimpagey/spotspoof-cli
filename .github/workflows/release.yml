@@ -13,9 +13,24 @@ permissions:
   contents: write
 
 jobs:
+  get-version:
+    name: Get version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Get version from Cargo.toml
+        id: version
+        run: |
+          VERSION=$(grep '^version' Cargo.toml | head -1 | cut -d'"' -f2)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: v$VERSION"
+
   release:
     name: Build ${{ matrix.target }}
-    if: needs.check-merge.outputs.should_release == 'true'
+    needs: get-version
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -26,9 +41,9 @@ jobs:
           - target: x86_64-unknown-linux-musl
             os: ubuntu-latest
           - target: x86_64-apple-darwin
-            os: macos-13  # Intel Mac
+            os: macos-13
           - target: aarch64-apple-darwin
-            os: macos-14  # Apple Silicon Mac
+            os: macos-14
     steps:
       - uses: actions/checkout@v4
       
@@ -62,6 +77,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           draft: true
-          tag_name: v${{ needs.check-merge.outputs.version }}
-          name: Release v${{ needs.check-merge.outputs.version }}
+          tag_name: v${{ needs.get-version.outputs.version }}
+          name: Release v${{ needs.get-version.outputs.version }}
           files: target/${{ matrix.target }}/release/${{ env.ASSET }}
