@@ -1,6 +1,6 @@
 [package]
 name = "spotspoof-cli"
-version = "0.2.0-beta"
+version = "1.0.0"
 edition = "2021"
 rust-version = "1.83"
 authors = ["Rob Page <rob@robertpage.uk>"]
