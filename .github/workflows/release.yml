@@ -13,28 +13,8 @@ permissions:
   contents: write
 
 jobs:
-  check-merge:
-    name: Check if staging merge
-    runs-on: ubuntu-latest
-    outputs:
-      should_release: ${{ steps.check.outputs.should_release }}
-      version: ${{ steps.version.outputs.version }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-            
-      - name: Get version from Cargo.toml
-        if: steps.check.outputs.should_release == 'true'
-        id: version
-        run: |
-          VERSION=$(grep '^version' Cargo.toml | head -1 | cut -d'"' -f2)
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Version: v$VERSION"
-
   release:
     name: Build ${{ matrix.target }}
-    needs: check-merge
     if: needs.check-merge.outputs.should_release == 'true'
     runs-on: ${{ matrix.os }}
     strategy:
