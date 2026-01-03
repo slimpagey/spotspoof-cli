@@ -10,34 +10,48 @@
 ## Table of Contents
 
 - [Features](#features)
+- [Limitations](#limitations)
 - [Quick Start](#quick-start)
 - [Installation](#installation)
 - [Usage](#usage)
+  - [Examples](#examples)
+  - [API Examples](#api-examples)
 - [API Server](#server-mode)
 - [Development](#development)
 - [Contributing](#contributing)
 
 ## Features
 
-- Dual Detection Modes: Identifies both ASCII lookalike domains (paypai.com) and IDN/Punycode homograph attacks (амаzоn.com)
-- CLI and API Server: Use as a command-line tool or run as an HTTP microservice for SOAR/security automation integration
-- Auto-Detection: Automatically determines if a domain is ASCII or IDN and uses the appropriate lookup method
-- Flexible Output: Export results as JSON, plain text, or CSV for easy parsing and analysis
-- Structured Logging: Configurable logging with plain or JSON format, outputting to stdout, stderr, or file
-- Production Ready: Built-in health check endpoint and OpenAPI documentation for easy integration
-- Lightweight: Self-contained binary with no external dependencies required
+- **Dual Detection Modes**: Identifies both ASCII lookalike domains (paypai.com) and IDN/Punycode homograph attacks (амаzоn.com)
+- **CLI and API Server**: Use as a command-line tool or run as an HTTP microservice for SOAR/security automation integration
+- **Auto-Detection**: Automatically determines if a domain is ASCII or IDN and uses the appropriate lookup method
+- **Flexible Output**: Export results as JSON, plain text, or CSV for easy parsing and analysis
+- **Structured Logging**: Configurable logging with plain or JSON format, outputting to stdout, stderr, or file
+- **Production Ready**: Built-in health check endpoint and OpenAPI documentation for easy integration
+- **Lightweight**: Self-contained binary with no external dependencies required
+- **Smart URL Parsing**: Strips schemes (`http://`, `https://`, `ftp://`, etc), paths/queries/fragments and ports. Only the domain & TLD are analysed.
+
+## Limitations
+
+- ASCII detection requires the domain database (~150MB download on first use)
+- IDN detection covers common homograph attacks but may not catch all Unicode spoofing variants
+- Similarity scoring is heuristic-based and may produce false positives/negatives
+- Does not verify if detected lookalike domains are actually malicious
 
 ## Quick Start
 
 ```bash
+# Linux example
 # Download the latest release (or download using the releases page)
-curl -LO https://github.com/slimpagey/spotspoof-cli/releases/latest/download/spotspoof
+curl -LO https://github.com/slimpagey/spotspoof-cli/releases/latest/download/spotspoof-linux-amd64
 
 # Make it executable
-chmod +x spotspoof
+chmod +x spotspoof-linux-amd64
+
+mv spotspoof-linux-amd64 spotspoof
 
 # Run it
-./spotspoof --help
+./spotspoof  --help
 ```
 
 ## Installation
@@ -63,7 +77,7 @@ curl -fsSL https://raw.githubusercontent.com/slimpagey/spotspoof-cli/main/instal
 
 ```bash
 # Cargo
-cargo install spotspoof
+cargo install spotspoof-cli
 ```
 
 ### Build from Source
@@ -121,6 +135,8 @@ spotspoof [OPTIONS] <COMMAND>
 
 ### Output Formats
 
+Supported by: `lookup`, `ascii`, and `idn` commands
+
 | Option | Description |
 |--------|-------------|
 | (default) | JSON output |
@@ -130,8 +146,9 @@ spotspoof [OPTIONS] <COMMAND>
 
 ### Database Behavior
 
-- The SQLite DB is auto-downloaded on first ASCII lookup if missing.
-- Use `--no-db` on `lookup`, `ascii`, or `serve` to skip DB usage (ASCII results will be empty).
+- The SQLite DB (~230MB) is auto-downloaded from GitHub releases on first ASCII lookup if missing
+- Database location: `./spotspoof.sqlite` (current directory).
+- Use `--no-db` on `lookup`, `ascii`, or `serve` to skip DB usage (ASCII results will be empty)
 
 ### Server Mode
 
@@ -151,8 +168,10 @@ spotspoof serve --host 127.0.0.1 --port 8080 --db spotspoof.sqlite
 ### Examples
 
 **Example 1: Lookup usage**
+
+With an ASCII domain:
+
 ```bash
-# With an ASCII domain
 spotspoof lookup example.com
 
 {
@@ -168,8 +187,9 @@ spotspoof lookup example.com
 }
 ```
 
+With a Punycode domain:
+
 ```bash
-# With a Punycode domain
 spotspoof lookup амаzоn.com
 
 {
@@ -242,10 +262,11 @@ spotspoof lookup example.com
 }
 ```
 
+Non ASCII domains will not return any results:
+
 ```bash
 spotspoof ascii амаzоn.com
 
-# It's not an ASCII domain, so returns no results
 {
   "q": "амаzоn.com",
   "ascii": true,
@@ -311,10 +332,11 @@ spotspoof idn амаzоn.com
 }
 ```
 
+Non Punycode domains will not return any results:
+
 ```bash
 spotspoof idn example.com
 
-# It's not a Punycode domain, so doesn't return any mappings
 {
   "q": "example.com",
   "ascii": false,
@@ -330,16 +352,27 @@ spotspoof idn example.com
 ```
 
 **Example 4: Plaintext output usage**
+
+Lookup:
+
 ```bash
 spotspoof lookup example.com -t
 
 Domain: exame.com, Similarity: 82
 ```
 
+IDN Analysis:
+
 ```bash
 spotspoof idn амаzоn.com -t
 
-Domain: amazon.com, Mappings: a -> а, m -> м, a -> а, o -> о; Domain: amaz0n.com, Mappings: a -> а, m -> м, a -> а, 0 -> о
+Domain: amazon.com,
+Mappings: a -> а, m -> м, a -> а, o -> о;
+Registered: true
+
+Domain: amaz0n.com,
+Mappings: a -> а, m -> м, a -> а, 0 -> о
+Registered: true
 ```
 
 **Example 5: CSV output usage**
@@ -348,6 +381,114 @@ spotspoof lookup example.com --csv
 
 domain,similarity
 exame.com,82
+```
+
+### API Examples
+
+**Check a domain for spoofing:**
+```bash
+curl -X POST http://localhost:8080/lookup \
+  -H "Content-Type: application/json" \
+  -d '{"domain": "paypai.com"}'
+
+{
+  "q":"paypai.com",
+  "ascii":true,
+  "puny":false,
+  "results": [
+    {
+      "domain":"paypal.com",
+      "similarity":90
+    }
+  ]
+}
+```
+
+**ASCII-only lookup:**
+```bash
+curl -X POST http://localhost:8080/ascii \
+  -H "Content-Type: application/json" \
+  -d '{"domain": "example.com"}'
+
+{
+  "q":"example.com",
+  "ascii":true,
+  "puny":false,
+  "results": [
+    {
+      "domain":"exame.com",
+      "similarity":82
+    }
+  ]
+}
+```
+
+**IDN lookup:**
+```bash
+curl -X POST http://localhost:8080/idn \
+  -H "Content-Type: application/json" \
+  -d '{"domain": "амаzоn.com"}'
+
+{
+  "q":"амаzоn.com",
+  "ascii":false,
+  "puny":true,
+  "results": [
+    {
+      "domain":"amazon.com",
+      "mappings": [
+        {
+          "unicode":"а",
+          "ascii":"a"
+        },
+        {
+          "unicode":"м",
+          "ascii":"m"
+        },
+        {
+          "unicode":"а",
+          "ascii":"a"
+        },
+        {
+          "unicode":"о",
+          "ascii":"o"
+        }
+      ],
+      "is_registered":true
+    },
+    {
+      "domain":"amaz0n.com",
+      "mappings": [
+        {
+          "unicode":"а",
+          "ascii":"a"
+        },
+        {
+          "unicode":"м",
+          "ascii":"m"
+        },
+        {
+          "unicode":"а",
+          "ascii":"a"
+        },
+        {
+          "unicode":"о",
+          "ascii":"0"
+        }
+      ],
+      "is_registered":true
+    }
+  ]
+}
+```
+
+**Health check:**
+```bash
+curl http://localhost:8080/healthz
+
+{
+  "ok": true
+}
 ```
 
 ## Development
