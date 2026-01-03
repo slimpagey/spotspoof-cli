@@ -63,7 +63,6 @@ Download the latest release for your platform. The CLI auto-downloads the SQLite
 | Platform | Download |
 |----------|----------|
 | Linux (x86_64) | [spotspoof-linux-amd64](https://github.com/slimpagey/spotspoof-cli/releases/latest/download/spotspoof-linux-amd64) |
-| macOS (Intel) | [spotspoof-darwin-amd64](https://github.com/slimpagey/spotspoof-cli/releases/latest/download/spotspoof-darwin-amd64) |
 | macOS (Apple Silicon) | [spotspoof-darwin-arm64](https://github.com/slimpagey/spotspoof-cli/releases/latest/download/spotspoof-darwin-arm64) |
 | Windows | [spotspoof-windows-amd64.exe](https://github.com/slimpagey/spotspoof-cli/releases/latest/download/spotspoof-windows-amd64.exe) |
 
