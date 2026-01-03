@@ -13,32 +13,15 @@ permissions:
   contents: write
 
 jobs:
-  check-merge:
-    name: Check if staging merge
+  get-version:
+    name: Get version
     runs-on: ubuntu-latest
     outputs:
-      should_release: ${{ steps.check.outputs.should_release }}
       version: ${{ steps.version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-      
-      - name: Check if merged from staging
-        id: check
-        run: |
-          COMMIT_MSG=$(git log -1 --pretty=%B)
-          
-          if echo "$COMMIT_MSG" | grep -qE "Merge.*staging.*into.*main"; then
-            echo "should_release=true" >> $GITHUB_OUTPUT
-            echo "✓ This is a merge from staging"
-          else
-            echo "should_release=false" >> $GITHUB_OUTPUT
-            echo "✗ Not a merge from staging, skipping release"
-          fi
       
       - name: Get version from Cargo.toml
-        if: steps.check.outputs.should_release == 'true'
         id: version
         run: |
           VERSION=$(grep '^version' Cargo.toml | head -1 | cut -d'"' -f2)
@@ -47,8 +30,7 @@ jobs:
 
   release:
     name: Build ${{ matrix.target }}
-    needs: check-merge
-    if: needs.check-merge.outputs.should_release == 'true'
+    needs: get-version
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -58,10 +40,8 @@ jobs:
             os: ubuntu-latest
           - target: x86_64-unknown-linux-musl
             os: ubuntu-latest
-          - target: x86_64-apple-darwin
-            os: macos-13  # Intel Mac
           - target: aarch64-apple-darwin
-            os: macos-14  # Apple Silicon Mac
+            os: macos-14
     steps:
       - uses: actions/checkout@v4
       
@@ -95,6 +75,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           draft: true
-          tag_name: v${{ needs.check-merge.outputs.version }}
-          name: Release v${{ needs.check-merge.outputs.version }}
+          tag_name: v${{ needs.get-version.outputs.version }}
+          name: Release v${{ needs.get-version.outputs.version }}
           files: target/${{ matrix.target }}/release/${{ env.ASSET }}
