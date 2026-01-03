@@ -1,6 +1,10 @@
 # Summary
 - 
 
+# Formatting
+- [ ] `cargo fmt`
+- [ ] `cargo clippy`
+
 # Testing
 - [ ] `cargo test`
 - [ ] Not run (explain why)
