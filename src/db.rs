@@ -12,6 +12,7 @@ const DEFAULT_DB_SHA256_PATH: &str = "config/db_sha256.txt";
 const EMBEDDED_DB_SHA256: &str = include_str!("../config/db_sha256.txt");
 pub const DEFAULT_DB_URL: &str =
     "https://github.com/slimpagey/spotspoof-cli/releases/latest/download/spotspoof.sqlite.zst";
+const ZSTD_WINDOW_LOG_MAX: u32 = 31;
 
 pub fn open(path: &str) -> Result<Connection> {
     let conn = Connection::open(path)?;
@@ -65,6 +66,7 @@ pub fn download_db(url: &str, db_path: &str) -> Result<()> {
 
     let tmp_path = format!("{db_path}.tmp");
     let mut decoder = zstd::stream::read::Decoder::new(std::io::Cursor::new(compressed))?;
+    decoder.window_log_max(ZSTD_WINDOW_LOG_MAX)?;
     let mut out = File::create(&tmp_path)?;
     std::io::copy(&mut decoder, &mut out)?;
     out.flush()?;
