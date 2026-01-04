@@ -9,6 +9,7 @@ use std::fs::{self, File};
 use std::io::{Read, Write};
 
 const DEFAULT_DB_SHA256_PATH: &str = "config/db_sha256.txt";
+const EMBEDDED_DB_SHA256: &str = include_str!("../config/db_sha256.txt");
 pub const DEFAULT_DB_URL: &str =
     "https://github.com/slimpagey/spotspoof-cli/releases/latest/download/spotspoof.sqlite.zst";
 
@@ -125,6 +126,9 @@ fn read_expected_db_sha256() -> Result<String> {
             Err(err) => last_err = Some(err),
         }
     }
+    if !EMBEDDED_DB_SHA256.trim().is_empty() {
+        return Ok(EMBEDDED_DB_SHA256.trim().to_lowercase());
+    }
     let err = last_err.unwrap_or_else(|| {
         std::io::Error::new(std::io::ErrorKind::NotFound, "DB checksum file not found")
     });
@@ -225,8 +229,7 @@ mod tests {
         let _guard = ENV_LOCK.lock().unwrap();
         std::env::remove_var("SPOTSPOOF_DB_SHA256_PATH");
 
-        let mut response =
-            reqwest::blocking::get(DEFAULT_DB_URL).expect("download release db");
+        let mut response = reqwest::blocking::get(DEFAULT_DB_URL).expect("download release db");
         if !response.status().is_success() {
             panic!("Download failed: HTTP {}", response.status());
         }
@@ -245,10 +248,7 @@ mod tests {
 
         let expected = read_expected_db_sha256().expect("read expected sha");
         let actual = format!("{:x}", hasher.finalize());
-        assert!(
-            total > 0,
-            "expected response body, downloaded 0 bytes"
-        );
+        assert!(total > 0, "expected response body, downloaded 0 bytes");
         assert_eq!(actual, expected, "release DB checksum mismatch");
     }
 }

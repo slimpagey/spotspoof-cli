@@ -345,12 +345,37 @@ fn resolve_db_path(db: Option<String>) -> String {
     if let Some(path) = db {
         return path;
     }
+    if let Some(path) = default_db_path() {
+        return path;
+    }
     if let Ok(exe) = std::env::current_exe() {
         if let Some(dir) = exe.parent() {
             return dir.join("spotspoof.sqlite").to_string_lossy().to_string();
         }
     }
     "spotspoof.sqlite".to_string()
+}
+
+fn default_db_path() -> Option<String> {
+    if cfg!(target_os = "windows") {
+        let base = std::env::var_os("LOCALAPPDATA").or_else(|| std::env::var_os("APPDATA"))?;
+        let mut path = std::path::PathBuf::from(base);
+        path.push("spotspoof");
+        path.push("spotspoof.sqlite");
+        return Some(path.to_string_lossy().to_string());
+    }
+    let home = std::env::var_os("HOME")?;
+    let mut path = std::path::PathBuf::from(home);
+    if cfg!(target_os = "macos") {
+        path.push("Library");
+        path.push("Application Support");
+    } else {
+        path.push(".local");
+        path.push("share");
+    }
+    path.push("spotspoof");
+    path.push("spotspoof.sqlite");
+    Some(path.to_string_lossy().to_string())
 }
 
 fn output_format(args: &OutputArgs) -> OutputFormat {
