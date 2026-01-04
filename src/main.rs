@@ -41,9 +41,6 @@ struct Cli {
     log_file: Option<String>,
 }
 
-const DEFAULT_DB_URL: &str =
-    "https://github.com/slimpagey/spotspoof-cli/releases/latest/spotspoof.sqlite.zst";
-
 #[derive(Subcommand)]
 enum Commands {
     /// Auto-detect ASCII vs IDN lookup
@@ -163,7 +160,7 @@ async fn run(cli: Cli) -> Result<()> {
                 let results = if no_db {
                     crate::types::empty_ascii_response(&domain)
                 } else {
-                    db::ensure_db(&db, DEFAULT_DB_URL)?;
+                    db::ensure_db(&db, db::DEFAULT_DB_URL)?;
                     ascii_spoof::lookup_ascii(&domain, &db)?
                 };
                 output(
@@ -185,7 +182,7 @@ async fn run(cli: Cli) -> Result<()> {
             let results = if no_db {
                 crate::types::empty_ascii_response(&domain)
             } else {
-                db::ensure_db(&db, DEFAULT_DB_URL)?;
+                db::ensure_db(&db, db::DEFAULT_DB_URL)?;
                 ascii_spoof::lookup_ascii(&domain, &db)?
             };
             output(
@@ -216,7 +213,7 @@ async fn run(cli: Cli) -> Result<()> {
             let db = resolve_db_path(db);
             info!(kind = "serve", host = %host, port, db_path = %db);
             if !no_db {
-                db::ensure_db(&db, DEFAULT_DB_URL)?;
+                db::ensure_db(&db, db::DEFAULT_DB_URL)?;
             }
             http::serve(host, port, db, !no_db).await?;
         }
