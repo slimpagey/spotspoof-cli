@@ -75,6 +75,9 @@ curl -fsSL https://raw.githubusercontent.com/slimpagey/spotspoof-cli/main/instal
 ### Package Managers
 
 ```bash
+# Homebrew
+brew tap slimpagey/spotspoof
+
 # Cargo
 cargo install spotspoof-cli
 ```
